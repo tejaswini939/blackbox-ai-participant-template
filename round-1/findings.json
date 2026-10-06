@@ -1,17 +1,61 @@
 {
   "round": "round-1",
-  "team": "BB-XXX",
-  "queries_used": 0,
+  "team": "BB-020",
+  "queries_used": 73,
   "claims": [
     {
       "type": "feature_effect",
-      "feature": "x1",
+      "feature": "age",
       "direction": "increases",
       "strength": "strong",
-      "confidence": 0.0,
+      "confidence": 0.9,
+      "evidence": {
+        "query_ids": ["1", "2", "3", "4", "5"],
+        "summary": "Increasing age produced increasing priority scores: approximately 0.6595 at age 46.215, 0.6986 at 53.625, 0.7599 at 64.740, 0.7677 at 72.150 and 0.7714 at 75. The increase becomes smaller at higher ages, suggesting saturation."
+      }
+    },
+    {
+      "type": "feature_effect",
+      "feature": "years_registered",
+      "direction": "decreases",
+      "strength": "strong",
+      "confidence": 0.9,
       "evidence": {
         "query_ids": [],
-        "summary": "Replace this example claim with your own. Every claim needs evidence."
+        "summary": "Reducing years_registered from 40 to 0 produced an observed score increase of approximately 0.1015 in a high-scoring configuration. This indicates a substantial negative effect from years_registered in the tested region."
+      }
+    },
+    {
+      "type": "feature_effect",
+      "feature": "prior_visits",
+      "direction": "increases",
+      "strength": "moderate",
+      "confidence": 0.8,
+      "evidence": {
+        "query_ids": [],
+        "summary": "In one configuration, approximately 4.6, 17.8 and 20 prior visits produced scores of 0.9201, 0.9593 and 0.9599 respectively. This supports an increasing relationship with possible saturation."
+      }
+    },
+    {
+      "type": "feature_effect",
+      "feature": "requested_beds",
+      "direction": "increases",
+      "strength": "weak",
+      "confidence": 0.7,
+      "evidence": {
+        "query_ids": [],
+        "summary": "Reducing requested_beds to 1 produced an observed score decrease of approximately 0.0186. This suggests a small positive effect from requested_beds in the tested region."
+      }
+    },
+    {
+      "type": "feature_effect",
+      "feature": "baseline_score",
+      "direction": "non_monotonic",
+      "strength": "moderate",
+      "confidence": 0.7,
+      "evidence": {
+        "query_ids": [],
+        "summary": "Baseline score was varied across a wide range, but the observed outputs did not show a consistent increase or decrease. The available evidence does not support a simple monotonic relationship."
       }
     }
   ]
