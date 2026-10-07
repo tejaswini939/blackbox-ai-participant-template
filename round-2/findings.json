@@ -1,17 +1,33 @@
 {
   "round": "round-2",
-  "team": "BB-XXX",
-  "queries_used": 0,
+  "team": "BB-020",
+  "queries_used": 17,
   "claims": [
     {
-      "type": "feature_effect",
-      "feature": "x1",
-      "direction": "increases",
-      "strength": "strong",
-      "confidence": 0.0,
+      "type": "interaction",
+      "features": ["age", "baseline_score"],
+      "confidence": 0.65,
       "evidence": {
         "query_ids": [],
-        "summary": "Replace this example claim with your own. Every claim needs evidence."
+        "summary": "Age has a clear positive effect, while baseline_score does not show a simple monotonic effect across the observed experiments. The available experiments do not establish a confirmed age-baseline_score interaction."
+      }
+    },
+    {
+      "type": "interaction",
+      "features": ["comorbidity_ratio", "prior_visits"],
+      "confidence": 0.55,
+      "evidence": {
+        "query_ids": ["15", "16", "17"],
+        "summary": "Changing prior_visits produced a large score change in the tested configuration, and changing comorbidity_ratio also produced a substantial score change. However, the available sequence does not provide a fully controlled 2x2 factorial design, so dependency between these features remains provisional rather than confirmed."
+      }
+    },
+    {
+      "type": "interaction",
+      "features": ["prior_visits", "years_registered"],
+      "confidence": 0.55,
+      "evidence": {
+        "query_ids": [],
+        "summary": "Prior_visits and years_registered both have substantial effects in the observed experiments. The current evidence is insufficient to establish whether their effects interact rather than acting independently."
       }
     }
   ]
