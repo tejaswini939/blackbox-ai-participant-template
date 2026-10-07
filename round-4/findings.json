@@ -1,17 +1,59 @@
 {
   "round": "round-4",
-  "team": "BB-XXX",
-  "queries_used": 0,
+  "team": "BB-020",
   "claims": [
     {
       "type": "feature_effect",
-      "feature": "x1",
-      "direction": "increases",
-      "strength": "strong",
-      "confidence": 0.0,
+      "confidence": "medium",
+      "features": ["age"],
       "evidence": {
-        "query_ids": [],
-        "summary": "Replace this example claim with your own. Every claim needs evidence."
+        "summary": "Controlled observations showed a positive relationship between age and score in the tested regions."
+      }
+    },
+    {
+      "type": "feature_effect",
+      "confidence": "medium",
+      "features": ["prior_visits"],
+      "evidence": {
+        "summary": "Controlled observations showed a positive relationship between prior visits and score in the tested regions."
+      }
+    },
+    {
+      "type": "feature_effect",
+      "confidence": "high",
+      "features": ["years_registered"],
+      "evidence": {
+        "summary": "In a controlled configuration, reducing years_registered from 40 to 0 increased the score by approximately 0.10, indicating a negative relationship in that tested region."
+      }
+    },
+    {
+      "type": "feature_effect",
+      "confidence": "medium",
+      "features": ["comorbidity_ratio"],
+      "evidence": {
+        "summary": "Controlled observations showed substantial score changes associated with comorbidity_ratio, with the magnitude depending on the surrounding configuration."
+      }
+    },
+    {
+      "type": "feature_effect",
+      "confidence": "low",
+      "features": ["ward"],
+      "evidence": {
+        "summary": "Changing ward produced smaller score differences in the tested configurations."
+      }
+    },
+    {
+      "type": "decision_rule",
+      "confidence": "medium",
+      "evidence": {
+        "summary": "The highest observed DECLINE score was 0.4522 and the lowest observed APPROVE score was 0.4937. Their midpoint, approximately 0.4729, was used as the surrogate decision cutoff."
+      }
+    },
+    {
+      "type": "decision_rule",
+      "confidence": "medium",
+      "evidence": {
+        "summary": "An Extra Trees surrogate trained on 90 Round-1 and Round-2 observations achieved 82.5% decision accuracy, MAE 0.1193 and R² 0.1713 on 80 unseen Round-4 queries."
       }
     }
   ]
