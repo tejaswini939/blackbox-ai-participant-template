@@ -1,73 +1,15 @@
 {
-  "round": "round-4",
-  "team": "BB-020",
-  "claims": [
-    {
-      "type": "model_selection",
-      "confidence": "medium",
-      "evidence": {
-        "summary": "A 5-fold cross-validation sweep using only the 90 Round-1 and Round-2 observations selected the base Extra Trees surrogate.",
-        "cv_mae": 0.012187,
-        "cv_r2": 0.907177,
-        "cv_r2_std": 0.118839
-      }
+    "team": "BB-020",
+    "cv_evaluation": {
+        "best_model": "Ridge Regression (Base)",
+        "cv_mae": 0.022749,
+        "cv_r2": 0.782017,
+        "cv_r2_std": 0.223254
     },
-    {
-      "type": "holdout_evaluation",
-      "confidence": "high",
-      "evidence": {
-        "summary": "The frozen model was evaluated on 80 previously unseen Round-4 observations.",
-        "mae": 0.120072,
-        "r2": 0.166570,
-        "decision_accuracy": 0.825
-      }
-    },
-    {
-      "type": "feature_effect",
-      "confidence": "medium",
-      "features": [
-        "age"
-      ],
-      "evidence": {
-        "summary": "Controlled observations showed a positive relationship between age and score in tested regions."
-      }
-    },
-    {
-      "type": "feature_effect",
-      "confidence": "medium",
-      "features": [
-        "prior_visits"
-      ],
-      "evidence": {
-        "summary": "Controlled observations showed a positive relationship between prior visits and score in tested regions."
-      }
-    },
-    {
-      "type": "feature_effect",
-      "confidence": "high",
-      "features": [
-        "years_registered"
-      ],
-      "evidence": {
-        "summary": "A controlled configuration showed that reducing years_registered from 40 to 0 increased score by approximately 0.10."
-      }
-    },
-    {
-      "type": "feature_effect",
-      "confidence": "medium",
-      "features": [
-        "comorbidity_ratio"
-      ],
-      "evidence": {
-        "summary": "Controlled observations showed substantial, context-dependent score changes associated with comorbidity_ratio."
-      }
-    },
-    {
-      "type": "decision_rule",
-      "confidence": "low",
-      "evidence": {
-        "summary": "R1+R2 contain zero DECLINE observations, so an exact hidden decision boundary cannot be learned from the training labels. 0.6150 is reported only as a surrogate decision cutoff."
-      }
+    "round_4_evaluation": {
+        "mae": 0.096965,
+        "r2": 0.482976,
+        "accuracy": 0.9375,
+        "surrogate_decision_cutoff": 0.615
     }
-  ]
 }
