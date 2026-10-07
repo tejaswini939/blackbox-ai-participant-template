@@ -1,24 +1,22 @@
-# BB-020 — GK-02 Round 4 Reconstruction
+# BB-020 — GK-02 Final Reconstruction
 
-## 1. Objective
+## Objective
 
-The objective of Round 4 was to reconstruct a surrogate model of the hidden GK-02 scoring system using observations collected during Rounds 1 and 2, and then evaluate how well the reconstruction generalizes to the 80 Round-4 queries.
+Reconstruct a surrogate model of the hidden GK-02 scoring system using observations collected during Rounds 1 and 2, then evaluate it on previously unseen Round-4 queries.
 
-## 2. Data
-
-The reconstruction training set contains the queries collected during the previous rounds:
+## Data
 
 - Round 1: 73 observations
 - Round 2: 17 observations
-- Total training observations: 90
+- Training data for model selection: 90 observations
+- Round 4 holdout: 80 observations
+- Full available dataset after holdout evaluation: 170 observations
 
-The Round-4 evaluation set contains 80 observations.
+The Round-4 observations were kept unseen during model selection and tuning.
 
-The 80 Round-4 observations were kept out of model training for the primary holdout evaluation.
+## Features
 
-## 3. Features
-
-The model uses the following GK-02 input features:
+The reconstruction uses:
 
 - age
 - baseline_score
@@ -31,80 +29,96 @@ The model uses the following GK-02 input features:
 - ward
 - years_registered
 
-The target variable is the observed GK-02 priority score.
+## Reconstruction and Model Selection
 
-## 4. Reconstruction Approach
+A 5-fold cross-validation model comparison was performed using only the 90 Round-1 and Round-2 observations.
 
-We investigated the observed GK-02 behaviour through controlled queries and then trained a regression-based surrogate model.
+The tested approaches included:
 
-The final surrogate used for the Round-4 holdout evaluation was an Extra Trees Regressor with:
+- Extra Trees
+- Random Forest
+- Gradient Boosting
+- HistGradientBoosting
+- Hyperparameter variations
+- Targeted interaction features
 
-- 1000 trees
+The selected model was the base Extra Trees surrogate:
+
+- ExtraTreesRegressor
+- n_estimators = 1000
 - random_state = 42
-- one-hot encoding for the categorical `ward` feature
-- all ten observed input features
+- n_jobs = -1
+- one-hot encoding for ward
+- base features without additional interaction terms
 
-The model was trained only on the 90 Round-1 and Round-2 observations before the Round-4 evaluation.
+Cross-validation performance of the selected configuration:
 
-## 5. Observed GK-02 Behaviour
+- CV MAE: 0.012187
+- CV R²: 0.907177
+- CV R² standard deviation: 0.118839
 
-Our observations suggested the following relationships:
+No tested alternative produced a better defensible result on the available training data, so the base Extra Trees model was retained.
 
-1. Age showed a positive relationship with score in the tested regions.
-2. Prior visits showed a positive relationship with score in tested regions.
-3. Years registered showed a negative relationship in the tested configurations.
-4. Comorbidity ratio produced a substantial and context-dependent score change.
-5. Ward produced a smaller observed effect in the tested configurations.
-6. Some Round-2 experiments changed more than one input simultaneously, so interaction claims were treated cautiously.
+## Round-4 Holdout Evaluation
 
-These are empirical observations from the synthetic GK-02 system and are not claims about real-world hospital admission logic.
-
-## 6. Round-4 Holdout Evaluation
-
-The model trained on the 90 Round-1 and Round-2 observations was evaluated against the 80 Round-4 observations before those observations were added to the final full-data reconstruction.
-
-### Results
+The frozen model was trained only on the 90 Round-1 and Round-2 observations and then evaluated on the 80 previously unseen Round-4 observations.
 
 | Metric | Result |
 |---|---:|
-| Round-4 observations | 80 |
-| MAE | 0.1193 |
-| R² | 0.1713 |
-| Decision accuracy | 82.5% |
+| Training observations | 90 |
+| Unseen Round-4 observations | 80 |
+| MAE | 0.120072 |
+| R² | 0.166570 |
+| Decision accuracy | 82.50% |
 
-The highest observed DECLINE score was 0.4522 and the lowest observed APPROVE score was 0.4937.
+These are the primary unseen-data generalization results.
 
-The midpoint between these observations was approximately 0.4729 and was used as the surrogate decision cutoff.
+## Decision Limitation
 
-## 7. Final Reconstruction
+All 90 Round-1 and Round-2 training observations are APPROVE observations.
 
-After completing the Round-4 holdout evaluation, the Round-4 observations were combined with the previous observations to form the complete available dataset:
+Therefore, the available training labels do not contain a DECLINE class from which an exact hidden decision boundary can be learned.
 
-- Round 1: 73
-- Round 2: 17
-- Round 4: 80
-- Total: 170 observations
+The value 0.6150 is therefore described only as a **surrogate decision cutoff**, corresponding to the lowest observed approved training score.
 
-A final Extra Trees surrogate was then trained using all 170 observations.
+It is not claimed to be the true hidden-system threshold.
 
-The full-data training fit is reported separately from the Round-4 holdout evaluation and is not presented as evidence of generalization.
+The 82.50% Round-4 decision accuracy should consequently be interpreted with this limitation in mind.
 
-## 8. Limitations
+## Final Refit
 
-The reconstruction is based on a relatively small number of observed queries compared with the continuous input space.
+After the Round-4 holdout evaluation was completed and recorded, the selected Extra Trees surrogate was refit using all 170 available observations.
 
-The Round-4 holdout results therefore provide a more meaningful indication of generalization than training-fit metrics.
+The full-data refit is a final reconstruction artifact and is not used as evidence of unseen-data generalization.
 
-The Extra Trees model should be interpreted as a behavioural surrogate of GK-02 rather than an exact recovery of the hidden implementation or model architecture.
+## Observed Behaviour
 
-## 9. Conclusion
+Earlier controlled observations indicated:
 
-Using the observations collected during Rounds 1 and 2, we reconstructed a surrogate model of GK-02 and evaluated it on 80 previously unseen Round-4 queries.
+- age showed a positive relationship with score in tested regions;
+- prior_visits showed a positive relationship in tested regions;
+- years_registered showed a negative relationship in a tested configuration;
+- comorbidity_ratio produced substantial, context-dependent score changes;
+- ward produced smaller observed changes in tested configurations.
 
-The reconstruction achieved:
+These are empirical observations of the synthetic GK-02 system and are not claims about real-world hospital admission logic.
 
-- 82.5% decision accuracy
-- 0.1193 MAE
-- 0.1713 R²
+## Limitations
 
-The results show that the observed GK-02 behaviour can be approximated from the controlled queries collected during the earlier rounds, while also highlighting regions where additional observations would be needed for a more accurate reconstruction.
+The reconstruction is based on a relatively small number of observations compared with the continuous input space.
+
+In particular, the R1+R2 training set does not contain DECLINE examples, limiting what can be inferred about the hidden decision rule.
+
+The Round-4 holdout therefore provides the most important test of score generalization available in this experiment.
+
+## Conclusion
+
+The final BB-020 reconstruction uses an Extra Trees surrogate selected through cross-validation on the 90 earlier observations and evaluated on 80 previously unseen Round-4 observations.
+
+The primary holdout results are:
+
+- MAE = 0.120072
+- R² = 0.166570
+- Decision accuracy = 82.50%
+
+The model is presented as a behavioural surrogate rather than an exact recovery of the hidden implementation.
